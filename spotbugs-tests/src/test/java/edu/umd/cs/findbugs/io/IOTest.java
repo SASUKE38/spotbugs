@@ -49,7 +49,7 @@ class IOTest {
 
     @Test
     void testSkipBytesWithZeroSkipped() throws IOException {
-        byte[] input = {1, 2, 3};
+        byte[] input = { 1, 2, 3 };
         InputStream stream = new ByteArrayInputStream(input);
         IO.skipFully(stream, 0);
         Assertions.assertEquals(1, stream.read());
@@ -65,7 +65,7 @@ class IOTest {
 
     @Test
     void testSkipBytesWithValidNumber() throws IOException {
-        byte[] input = {5, 6, 2, 4, 9, 10, 100, 43};
+        byte[] input = { 5, 6, 2, 4, 9, 10, 100, 43 };
         ByteArrayInputStream stream = new ByteArrayInputStream(input);
         System.out.println(input);
         IO.skipFully(stream, input.length - 1);
@@ -74,7 +74,7 @@ class IOTest {
 
     @Test
     void testSkipBytesWithChainCalls() throws IOException {
-        byte[] input = {5, 6, 2, 4, 9, 10, 100, 43};
+        byte[] input = { 5, 6, 2, 4, 9, 10, 100, 43 };
         ByteArrayInputStream stream = new ByteArrayInputStream(input);
         System.out.println(input);
         IO.skipFully(stream, 4);
