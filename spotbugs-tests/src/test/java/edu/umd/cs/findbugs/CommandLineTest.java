@@ -41,7 +41,7 @@ class CommandLineTest {
     void requiredArgsTest() throws CommandLine.HelpRequestedException, IOException {
         commandLine.addOption("-fa", "test argument", "longer description of test arg");
         commandLine.parse(new String[] { "-fa", "test argument", "-xml" });
-        
+
         assertThat(commandLine.options.get(0), is("-fa"));
         assertThat(commandLine.options.get(1), is("-xml"));
         assertThat(commandLine.args.get(0), is("test argument"));
