@@ -3,8 +3,10 @@ pipeline {
     stages {
         stage('Build') { 
             steps {
-                sh 'gradlew spotlessApply'
-                sh 'gradlew assemble' 
+                withGradle {
+                    bat './gradlew spotlessApply'
+                    bat './gradlew assemble' 
+                }
             }
         }
     }
