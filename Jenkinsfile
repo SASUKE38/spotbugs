@@ -8,10 +8,8 @@ pipeline {
         }
         stage('Build') { 
             steps {
-                withGradle {
-                    bat './gradlew spotlessApply'
-                    bat './gradlew assemble' 
-                }
+                bat './gradlew spotlessApply'
+                bat './gradlew assemble' 
             }
         }
         stage('Test') { 
