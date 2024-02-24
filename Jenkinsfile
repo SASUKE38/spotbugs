@@ -3,7 +3,8 @@ pipeline {
     stages {
         stage('Build') { 
             steps {
-                powershell './gradlew assemble' 
+                sh 'gradlew spotlessApply'
+                sh 'gradlew assemble' 
             }
         }
     }

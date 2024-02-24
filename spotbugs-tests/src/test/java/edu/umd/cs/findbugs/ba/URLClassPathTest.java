@@ -1,6 +1,5 @@
 package edu.umd.cs.findbugs.ba;
 
-import edu.umd.cs.findbugs.ba.URLClassPath;
 
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -18,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 public class URLClassPathTest {
-    
+
     @TempDir
     private static Path tempDir;
 
@@ -29,7 +28,7 @@ public class URLClassPathTest {
 
     /**
      * Creates a zip file in the temporary directory for testing.
-     * 
+     *
      * @param name The name of the zip file. Should not have an extension.
      * @return A reference to the created file.
      * @throws IOException If the file could not be created.
@@ -111,7 +110,7 @@ public class URLClassPathTest {
      */
     @Test
     void getPresentFileExtension() {
-        Assertions.assertEquals(".zip",  URLClassPath.getFileExtension("file.zip"));
+        Assertions.assertEquals(".zip", URLClassPath.getFileExtension("file.zip"));
     }
 
     /**
@@ -148,7 +147,7 @@ public class URLClassPathTest {
     void addInvalidURLTest() {
         Assertions.assertThrows(IOException.class, () -> urlCP.addURL("thing"));
     }
-    
+
     @Test
     void addInvalidURLArchiveTest() {
         Assertions.assertThrows(IOException.class, () -> urlCP.addURL("thing.zip"));
@@ -263,6 +262,6 @@ public class URLClassPathTest {
             Assertions.assertThrows(ClassNotFoundException.class, () -> urlCP.lookupClass("thing"));
         } catch (IOException e) {
             Assertions.fail("Test generated an IOException: " + e);
-        }    
+        }
     }
 }
