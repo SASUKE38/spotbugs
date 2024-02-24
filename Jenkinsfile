@@ -9,5 +9,10 @@ pipeline {
                 }
             }
         }
+        stage('Test') { 
+            steps {
+                bat './gradlew test --rerun' 
+            }
+        }
     }
 }
