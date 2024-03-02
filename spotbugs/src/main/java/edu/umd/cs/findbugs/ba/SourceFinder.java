@@ -237,6 +237,97 @@ public class SourceFinder implements AutoCloseable {
         }
     }
 
+    public static class PublicInMemorySourceRepository implements SourceRepository {
+
+        Map<String, byte[]> contents = new HashMap<>();
+        Map<String, Long> lastModified = new HashMap<>();
+
+        PublicInMemorySourceRepository(@WillClose ZipInputStream in) throws IOException {
+            init(in);
+        }
+
+        public void init(@WillClose ZipInputStream in) throws IOException {
+            try {
+                while (true) {
+
+                    ZipEntry e = in.getNextEntry();
+                    if (e == null) {
+                        break;
+                    }
+                    if (!e.isDirectory()) {
+                        String name = e.getName();
+                        long size = e.getSize();
+
+                        if (size > Integer.MAX_VALUE) {
+                            throw new IOException(name + " is too big at " + size + " bytes");
+                        }
+                        ByteArrayOutputStream out;
+                        if (size <= 0) {
+                            out = new ByteArrayOutputStream();
+                        } else {
+                            out = new ByteArrayOutputStream((int) size);
+                        }
+                        GZIPOutputStream gOut = new GZIPOutputStream(out);
+                        IO.copy(in, gOut);
+                        gOut.close();
+                        byte data[] = out.toByteArray();
+                        contents.put(name, data);
+                        lastModified.put(name, e.getTime());
+                    }
+                    in.closeEntry();
+                }
+            } finally {
+                Util.closeSilently(in);
+            }
+        }
+
+        @Override
+        public boolean contains(String fileName) {
+            return contents.containsKey(fileName);
+        }
+
+        @Override
+        public SourceFileDataSource getDataSource(final String fileName) {
+            return new SourceFileDataSource() {
+                private final URI uri = URI.create(fileName);
+
+                @Override
+                public String getFullFileName() {
+                    return fileName;
+                }
+
+                @Override
+                public URI getFullURI() {
+                    return uri;
+                }
+
+                @Override
+                public InputStream open() throws IOException {
+                    return new GZIPInputStream(new ByteArrayInputStream(contents.get(fileName)));
+                }
+
+                @Override
+                public long getLastModified() {
+                    Long when = lastModified.get(fileName);
+                    if (when == null || when < 0) {
+                        return 0;
+                    }
+                    return when;
+                }
+            };
+        }
+
+        @Override
+        public boolean isPlatformDependent() {
+            return false;
+        }
+
+        @Override
+        public void close() {
+            // this class keeps no file handler
+        }
+    }
+
     SourceRepository makeInMemorySourceRepository(final String url) {
         final BlockingSourceRepository r = new BlockingSourceRepository();
         Util.runInDameonThread(() -> {
