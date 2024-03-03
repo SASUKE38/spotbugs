@@ -1,6 +1,7 @@
 package edu.umd.cs.findbugs;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -11,6 +12,9 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 class TextUICommandLineTest {
     @Test
@@ -77,5 +81,14 @@ class TextUICommandLineTest {
         assertTrue(emacsFile.toFile().isFile());
         assertTrue(xdocsFile.toFile().isFile());
         assertTrue(textFile.toFile().isFile());
+    }
+
+    @Test
+    public void mockTest() throws IOException {
+        Path xmlFile = Files.createTempFile("spotbugs", ".xml");
+        TextUICommandLine commandLine = new TextUICommandLine();
+        TextUICommandLine spy = spy(commandLine);
+        spy.handleOption("-xml", "=" + xmlFile.toFile().getAbsolutePath());
+        verify(spy, times(1)).handleOutputFilePath(Mockito.any(), Mockito.any());
     }
 }
